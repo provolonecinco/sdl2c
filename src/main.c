@@ -2,10 +2,7 @@
 #include <SDL2/SDL.h>
 #include <SDL2/SDL_image.h>
 
-// global user input
-struct userinput gUserInput;
-
-#include "input.c"
+#include "input.h"
 
 int main(int argc, char* argv[]) {
 	SDL_Init(SDL_INIT_EVERYTHING);
