@@ -3,7 +3,7 @@
 #include <SDL2/SDL_image.h>
 
 // global user input
-struct input gUserInput;
+struct userinput gUserInput;
 
 #include "input.c"
 
