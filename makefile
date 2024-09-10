@@ -2,7 +2,7 @@
 
 OUTPUT 	:= build
 EXE	:= $(OUTPUT)/sdl2c	
-FLAGS	:= -lmingw32 -lSDL2main -lSDL2 -lSDL2_image
+FLAGS	:= -lmingw32 -lSDL2main -lSDL2 -lSDL2_image -I.\src\include\
 
 SRCDIR 	:= src
 OBJDIR 	:= $(OUTPUT)/obj
@@ -24,8 +24,8 @@ run:
 
 # Link object files into executable
 $(EXE): $(OBJFILES)
-	gcc $^ $(FLAGS) -o $@ 
+	@gcc $^ $(FLAGS) -o $@ 
 
 # Compile source files
 $(OBJDIR)/%.o: $(SRCDIR)/%.c
-	gcc -c $< $(FLAGS) -o $@ 
+	@gcc -c $< $(FLAGS) -o $@ 
