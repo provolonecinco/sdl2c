@@ -2,6 +2,7 @@
 #include <SDL2/SDL.h>
 #include <SDL2/SDL_image.h>
 #include <glad.h>
+#include <cglm/cglm.h>
 
 #include "input.h"
 #include "opengl.h"
@@ -33,9 +34,14 @@ int main(int argc, char* argv[]) {
 	SDL_Surface *icon = IMG_Load("src/assets/icon.png");
 	SDL_SetWindowIcon(window, icon);
 
-    int run = 1;
+	int run = 1;
 	SDL_Event event;
 	
+	float dot1;
+	vec3 A = {1.0, 2.0, 3.0};
+	vec3 B = {1.5, 1.5, 1.5};
+	dot1 = glm_vec3_dot(A, B);
+	printf("Dot Product of A and B: %4.4f\n", dot1);
 
     // main loop
 	while(run) {
@@ -48,6 +54,15 @@ int main(int argc, char* argv[]) {
                 CheckInput(event);
 		    }
 		
+		if (gUserInput.KEY_UP) {
+			g_uOffset += 0.01f;
+			printf("g_uOffset: %2.2f\n", g_uOffset);
+			}
+		if (gUserInput.KEY_DOWN) {
+			g_uOffset -= 0.01f;
+			printf("g_uOffset: %2.2f\n", g_uOffset);
+			}
+
         PreDraw();
 		Draw();
         SDL_GL_SwapWindow(window);

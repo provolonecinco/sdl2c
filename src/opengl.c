@@ -1,8 +1,28 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <glad.h>
+#include <cglm/cglm.h>
 
 #include "opengl.h"
+
+// Error Handling
+static void GLClearAllErrors(){
+    while(glGetError() != GL_NO_ERROR) {
+
+    }
+}
+
+static int GLCheckErrorStatus() {
+    GLenum error;
+
+    while(error = glGetError()) {
+        printf("OpenGL Error: %s", error);
+        return 1;   
+    }
+    return 0;
+}
+
+#define GLCheck(x); GLClearAllErrors(); x; GLCheckErrorStatus();
 
 void PrintHWInfo() {
 	printf("%s\n", glGetString(GL_VENDOR));
@@ -55,23 +75,23 @@ void VertexSpec() {
     // Vertex information
     glEnableVertexAttribArray(0);
     glVertexAttribPointer(
-            0, 
-            3, 
-            GL_FLOAT, 
-            GL_FALSE, 
-            sizeof(GL_FLOAT) * 6, 
-            (void*)0
+        0, 
+        3, 
+        GL_FLOAT, 
+        GL_FALSE, 
+        sizeof(GL_FLOAT) * 6, 
+        (void*)0
     ); 
 
     // Color information
     glEnableVertexAttribArray(1);
     glVertexAttribPointer(
-            1, 
-            3, 
-            GL_FLOAT, 
-            GL_FALSE, 
-            sizeof(GL_FLOAT) * 6, 
-            (GLvoid*)(sizeof(GL_FLOAT) * 3)
+        1, 
+        3, 
+        GL_FLOAT, 
+        GL_FALSE, 
+        sizeof(GL_FLOAT) * 6, 
+        (GLvoid*)(sizeof(GL_FLOAT) * 3)
     );
 
     glBindVertexArray(0);
@@ -150,7 +170,7 @@ void CreateGraphicsPipeline() {
     //printf("Contents of src/shaders/vertex.glsl:\n%s\n", VertexShader);
     //printf("Contents of src/shaders/fragment.glsl:\n%s\n", FragmentShader);
  
-    Shaderbuf = CreateShaderProgram(VertexShader, FragmentShader);
+    ShaderProgram = CreateShaderProgram(VertexShader, FragmentShader);
     
     free(VertexShader);
     free(FragmentShader);
@@ -164,8 +184,9 @@ void PreDraw() {
 
 	glClear(GL_DEPTH_BUFFER_BIT | GL_COLOR_BUFFER_BIT);
 
-	glUseProgram(Shaderbuf);
-}
+	glUseProgram(ShaderProgram);
+    glUniform1f(0, g_uOffset);
+    }
 
 void Draw() {
 	glBindVertexArray(VAObuf);
