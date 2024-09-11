@@ -6,6 +6,8 @@
 #include "input.h"
 #include "opengl.h"
 
+void ExitProgram();
+
 int main(int argc, char* argv[]) {
 	SDL_Init(SDL_INIT_EVERYTHING);
 	SDL_Window *window = SDL_CreateWindow(
@@ -15,46 +17,48 @@ int main(int argc, char* argv[]) {
 		640,
 		480,
 		SDL_WINDOW_OPENGL);
-	
-	if (SDL_GL_CreateContext(window) == NULL) {
+
+	if(!SDL_GL_CreateContext(window)) {
 		printf("Cannot create OpenGL context: %s\n", SDL_GetError());
-	} else {
-		if(!gladLoadGLLoader(SDL_GL_GetProcAddress)) {
+        exit(1);
+    }
+    
+    if(!gladLoadGLLoader(SDL_GL_GetProcAddress)) {
 			printf("Cannot initialize GLAD");
 			exit(1);
-		} else {
-			PrintHWInfo();
-			VertexSpec();
-			CreateGraphicsPipeline();
-		}
-	}
-
-
-	SDL_Renderer *renderer = SDL_CreateRenderer(window, -1, SDL_RENDERER_SOFTWARE);
-	SDL_SetRenderDrawColor(renderer, 66, 104, 132, 255);
+	} 
+			
+    PrintHWInfo();
+	VertexSpec();
+	CreateGraphicsPipeline();
 
 	SDL_Surface *icon = IMG_Load("src/assets/icon.png");
 	SDL_SetWindowIcon(window, icon);
 
-	int quit = 0;
+    int run = 1;
 	SDL_Event event;
+	
 
-	// main loop
-	while(!quit) {
+    // main loop
+	while(run) {
 		while(SDL_PollEvent(&event) != 0) {
 			if(event.type == SDL_QUIT) {
-				quit = 1;
-			}
-			CheckInput(event);
-		}
-		PreDraw();
+                run = 0;
+            }
+			
+            if(event.type == SDL_KEYDOWN | SDL_KEYUP) {
+                CheckInput(event);
+		    }
+		
+        PreDraw();
 		Draw();
-		SDL_GL_SwapWindow(window);	
+        SDL_GL_SwapWindow(window);
+        }
 	}
 
-	printf("Goodbye!");
+	printf("Exiting...");
 	SDL_DestroyWindow(window);
 	SDL_Quit();
-
-	return 0;
+    return 0;
 }
+

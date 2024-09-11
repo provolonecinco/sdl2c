@@ -1,4 +1,5 @@
 #include <stdio.h>
+#include <stdlib.h>
 #include <glad.h>
 
 #include "opengl.h"
@@ -60,26 +61,53 @@ GLuint CreateShaderProgram(char *VertexShaderSource, char *FragmentShaderSource)
 }
 
 void CreateGraphicsPipeline() {
-    char VertexShader[256];
-    char FragmentShader[256];
+    char *VertexShader = 0;
+    char *FragmentShader = 0;
+    long length;
 
-    FILE *file = fopen("src/shaders/vertex.glsl", "r");
+    FILE *file = fopen("src/shaders/vertex.glsl", "rb");
     if (file == NULL) {
-    	printf("Unable to open vertex shader file");
+        printf("Unable to open vertex shader!\n");
+        exit(1);
     }
+    // find end of file to determine how many
+    // bytes to allocate on the heap
+    fseek(file, 0, SEEK_END);
+    length = ftell(file);
+    printf("Vertex Shader: %d bytes\n", length);
+    fseek(file, 0, SEEK_SET);
+    VertexShader = malloc(length);
 
-    fgets(VertexShader, sizeof(VertexShader), file);
+    if (VertexShader) {
+        fread(VertexShader, 1, length, file);
+    }
     fclose(file);
 
-    file = fopen("src/shaders/fragment.glsl", "r");
+    file = fopen("src/shaders/fragment.glsl", "rb");
     if (file == NULL) {
-    	printf("Unable to open vertex shader file");
+        printf("Unable to open fragment shader!\n");
+        exit(1);
     }
+    // find end of file to determine how many
+    // bytes to allocate on the heap
+    fseek(file, 0, SEEK_END);
+    length = ftell(file);
+    printf("Fragment Shader: %d bytes\n", length);
+    fseek(file, 0, SEEK_SET);
+    FragmentShader = malloc(length);
 
-    fgets(FragmentShader, sizeof(FragmentShader), file);
+    if (FragmentShader) {
+        fread(FragmentShader, 1, length, file);
+    }
     fclose(file);
-
+    
+    //printf("Contents of src/shaders/vertex.glsl:\n%s\n", VertexShader);
+    //printf("Contents of src/shaders/fragment.glsl:\n%s\n", FragmentShader);
+ 
     Shaderbuf = CreateShaderProgram(VertexShader, FragmentShader);
+    
+    free(VertexShader);
+    free(FragmentShader);
 }
 
 void PreDraw() {
