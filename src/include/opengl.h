@@ -3,6 +3,7 @@
 
 GLuint VAObuf;	// Vertex Array Object
 GLuint VBObuf;	// Vertex Buffer Object
+GLuint IBObuf;  // Index Buffer Object
 GLuint Shaderbuf;	// Shader Object
 
 void PrintHWInfo();

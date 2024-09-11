@@ -13,14 +13,19 @@ void PrintHWInfo() {
 
 void VertexSpec() {
     // Generate and bind VAO
-    GLfloat vertexPosition[] = {
-        // Interleaved attributes
-        -0.8f, -0.8f, 0.0f,
-        1.0f, 0.0f, 0.0f,
-        0.8f, -0.8f, 0.0f,
-        0.0f, 1.0f, 0.0f,
-        0.0f, 0.8f, 0.0f,
-        0.0f, 0.0f, 1.0f
+    GLfloat vertexData[] = {
+        // 0 - Vertex
+        -0.5f, -0.5f, 0.0f,     // Bottom Left Vertex
+        1.0f, 0.0f, 0.0f,       // color
+        // 1 - Vertex
+        0.5f, -0.5f, 0.0f,      // Bottom Right vertex
+        0.0f, 1.0f, 0.0f,       // color
+        // 2 - Vertex
+        -0.5f, 0.5f, 0.0f,      // Top Left vertex
+        0.0f, 0.0f, 1.0f,       // color
+        // 3 - Vertex
+        0.5f, 0.5f, 0.0f,       // Top Right Vertex
+        1.0f, 0.0f, 0.0f,       // color
     };
 
     glGenVertexArrays(1, &VAObuf);
@@ -30,10 +35,21 @@ void VertexSpec() {
     glGenBuffers(1, &VBObuf);
     glBindBuffer(GL_ARRAY_BUFFER, VBObuf);
     glBufferData(
-            GL_ARRAY_BUFFER, 
-            18 * sizeof(GLfloat), 
-            vertexPosition, 
-            GL_STATIC_DRAW
+        GL_ARRAY_BUFFER, 
+        sizeof(vertexData), 
+        vertexData, 
+        GL_STATIC_DRAW
+    );
+
+    GLuint indexData[] = {2, 0, 1, 3, 2, 1};
+    // Index Buffer information (IBO/EBO)
+    glGenBuffers(1, &IBObuf);
+    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, IBObuf);
+    glBufferData(
+        GL_ELEMENT_ARRAY_BUFFER,
+        sizeof(indexData),
+        indexData,
+        GL_STATIC_DRAW
     );
 
     // Vertex information
@@ -46,7 +62,7 @@ void VertexSpec() {
             sizeof(GL_FLOAT) * 6, 
             (void*)0
     ); 
-   
+
     // Color information
     glEnableVertexAttribArray(1);
     glVertexAttribPointer(
@@ -154,5 +170,6 @@ void PreDraw() {
 void Draw() {
 	glBindVertexArray(VAObuf);
 	glBindBuffer(GL_ARRAY_BUFFER, VBObuf);
-	glDrawArrays(GL_TRIANGLES, 0, 3);
+	//glDrawArrays(GL_TRIANGLES, 0, 6);
+    glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
 }
