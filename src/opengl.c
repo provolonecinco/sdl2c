@@ -14,9 +14,13 @@ void PrintHWInfo() {
 void VertexSpec() {
     // Generate and bind VAO
     GLfloat vertexPosition[] = {
+        // Interleaved attributes
         -0.8f, -0.8f, 0.0f,
+        1.0f, 0.0f, 0.0f,
         0.8f, -0.8f, 0.0f,
-        0.0f, 0.8f, 0.0f
+        0.0f, 1.0f, 0.0f,
+        0.0f, 0.8f, 0.0f,
+        0.0f, 0.0f, 1.0f
     };
 
     glGenVertexArrays(1, &VAObuf);
@@ -25,12 +29,38 @@ void VertexSpec() {
     // Generate and Bind VBO
     glGenBuffers(1, &VBObuf);
     glBindBuffer(GL_ARRAY_BUFFER, VBObuf);
-    glBufferData(GL_ARRAY_BUFFER, 9 * sizeof(GLfloat), vertexPosition, GL_STATIC_DRAW);
+    glBufferData(
+            GL_ARRAY_BUFFER, 
+            18 * sizeof(GLfloat), 
+            vertexPosition, 
+            GL_STATIC_DRAW
+    );
 
+    // Vertex information
     glEnableVertexAttribArray(0);
-    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 0, (void*)0); // 3 points, float, no rgba
+    glVertexAttribPointer(
+            0, 
+            3, 
+            GL_FLOAT, 
+            GL_FALSE, 
+            sizeof(GL_FLOAT) * 6, 
+            (void*)0
+    ); 
+   
+    // Color information
+    glEnableVertexAttribArray(1);
+    glVertexAttribPointer(
+            1, 
+            3, 
+            GL_FLOAT, 
+            GL_FALSE, 
+            sizeof(GL_FLOAT) * 6, 
+            (GLvoid*)(sizeof(GL_FLOAT) * 3)
+    );
+
     glBindVertexArray(0);
     glDisableVertexAttribArray(0);
+    glDisableVertexAttribArray(1);
 }
 
 GLuint CompileShader(GLuint type, char *source) {
