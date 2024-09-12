@@ -1,5 +1,5 @@
-#ifndef opengl_h
-#define opengl_h
+#ifndef gfx_h
+#define gfx_h
 
 float g_uOffset;
 

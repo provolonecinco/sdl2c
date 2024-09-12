@@ -1,11 +1,11 @@
 #include <stdio.h>
 #include <SDL2/SDL.h>
 #include <SDL2/SDL_image.h>
-#include <glad.h>
+#include <glad/glad.h>
 #include <cglm/cglm.h>
 
 #include "input.h"
-#include "opengl.h"
+#include "gfx.h"
 
 int main(int argc, char* argv[]) {
 	SDL_Init(SDL_INIT_EVERYTHING);
@@ -26,22 +26,20 @@ int main(int argc, char* argv[]) {
 			printf("Cannot initialize GLAD");
 			exit(1);
 	} 
+
+	glDisable(GL_DEPTH_TEST);
+	glDisable(GL_CULL_FACE);
+	glViewport(0, 0, 640, 480);
 			
     PrintHWInfo();
 	VertexSpec();
-	CreateGraphicsPipeline();
+	CreateGraphicsPipeline("src/shaders/vertex.glsl", "src/shaders/fragment.glsl");
 
-	SDL_Surface *icon = IMG_Load("src/assets/icon.png");
+	SDL_Surface *icon = IMG_Load("icon.png");
 	SDL_SetWindowIcon(window, icon);
 
 	int run = 1;
 	SDL_Event event;
-	
-	float dot1;
-	vec3 A = {1.0, 2.0, 3.0};
-	vec3 B = {1.5, 1.5, 1.5};
-	dot1 = glm_vec3_dot(A, B);
-	printf("Dot Product of A and B: %4.4f\n", dot1);
 
     // main loop
 	while(run) {
@@ -63,8 +61,14 @@ int main(int argc, char* argv[]) {
 			printf("g_uOffset: %2.2f\n", g_uOffset);
 			}
 
-        PreDraw();
-		Draw();
+		glClearColor(0.0f, 0.15f, 0.3f, 1.0f);
+		glClear(GL_DEPTH_BUFFER_BIT | GL_COLOR_BUFFER_BIT);
+		glUseProgram(ShaderProgram);
+		glUniform1f(0, g_uOffset);
+
+		glBindVertexArray(VAObuf);
+		glBindBuffer(GL_ARRAY_BUFFER, VBObuf);
+		glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
         SDL_GL_SwapWindow(window);
         }
 	}

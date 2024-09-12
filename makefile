@@ -2,7 +2,7 @@
 
 OUTPUT 	:= build
 EXE	:= $(OUTPUT)/sdl2c	
-FLAGS	:= -lmingw32 -lSDL2main -lSDL2 -lSDL2_image -I.\src\include\
+FLAGS	:= -lmingw32 -lSDL2main -lSDL2 -lSDL2_image -I.\src\include
 
 SRCDIR 	:= src
 OBJDIR 	:= $(OUTPUT)/obj
@@ -10,7 +10,7 @@ OBJDIR 	:= $(OUTPUT)/obj
 SRCFILES := $(wildcard $(SRCDIR)/*.c)
 OBJFILES := $(patsubst $(SRCDIR)/%.c, $(OBJDIR)/%.o, $(SRCFILES))
 
-all: dir $(EXE)
+all: $(EXE)
 
 clean:
 	@rmdir /s /q $(OUTPUT)

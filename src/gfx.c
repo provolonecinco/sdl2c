@@ -1,28 +1,29 @@
 #include <stdio.h>
 #include <stdlib.h>
-#include <glad.h>
+#include <glad/glad.h>
 #include <cglm/cglm.h>
 
-#include "opengl.h"
+#include "gfx.h"
 
-// Error Handling
-static void GLClearAllErrors(){
-    while(glGetError() != GL_NO_ERROR) {
+GLfloat vertexData[] = { 
+    // 0 - Vertex
+    -0.5f, -0.5f, 0.0f,     // Bottom Left Vertex
+    1.0f, 0.0f, 0.0f,       // color
+    // 1 - Vertex
+    0.5f, -0.5f, 0.0f,      // Bottom Right vertex
+    0.0f, 1.0f, 0.0f,       // color
+    // 2 - Vertex
+    -0.5f, 0.5f, 0.0f,      // Top Left vertex
+    0.0f, 0.0f, 1.0f,       // color
+    // 3 - Vertex
+    0.5f, 0.5f, 0.0f,       // Top Right Vertex
+    1.0f, 0.0f, 0.0f,       // color
+};
 
-    }
-}
-
-static int GLCheckErrorStatus() {
-    GLenum error;
-
-    while(error = glGetError()) {
-        printf("OpenGL Error: %s", error);
-        return 1;   
-    }
-    return 0;
-}
-
-#define GLCheck(x); GLClearAllErrors(); x; GLCheckErrorStatus();
+GLuint indexData[] = {
+    2, 0, 1, 
+    3, 2, 1
+};
 
 void PrintHWInfo() {
 	printf("%s\n", glGetString(GL_VENDOR));
@@ -33,21 +34,6 @@ void PrintHWInfo() {
 
 void VertexSpec() {
     // Generate and bind VAO
-    GLfloat vertexData[] = {
-        // 0 - Vertex
-        -0.5f, -0.5f, 0.0f,     // Bottom Left Vertex
-        1.0f, 0.0f, 0.0f,       // color
-        // 1 - Vertex
-        0.5f, -0.5f, 0.0f,      // Bottom Right vertex
-        0.0f, 1.0f, 0.0f,       // color
-        // 2 - Vertex
-        -0.5f, 0.5f, 0.0f,      // Top Left vertex
-        0.0f, 0.0f, 1.0f,       // color
-        // 3 - Vertex
-        0.5f, 0.5f, 0.0f,       // Top Right Vertex
-        1.0f, 0.0f, 0.0f,       // color
-    };
-
     glGenVertexArrays(1, &VAObuf);
     glBindVertexArray(VAObuf);
 
@@ -61,7 +47,6 @@ void VertexSpec() {
         GL_STATIC_DRAW
     );
 
-    GLuint indexData[] = {2, 0, 1, 3, 2, 1};
     // Index Buffer information (IBO/EBO)
     glGenBuffers(1, &IBObuf);
     glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, IBObuf);
@@ -126,12 +111,12 @@ GLuint CreateShaderProgram(char *VertexShaderSource, char *FragmentShaderSource)
     return programObject;
 }
 
-void CreateGraphicsPipeline() {
+void CreateGraphicsPipeline(char *vertsource, char *fragsource) {
     char *VertexShader = 0;
     char *FragmentShader = 0;
     long length;
 
-    FILE *file = fopen("src/shaders/vertex.glsl", "rb");
+    FILE *file = fopen(vertsource, "rb");
     if (file == NULL) {
         printf("Unable to open vertex shader!\n");
         exit(1);
@@ -149,7 +134,7 @@ void CreateGraphicsPipeline() {
     }
     fclose(file);
 
-    file = fopen("src/shaders/fragment.glsl", "rb");
+    file = fopen(fragsource, "rb");
     if (file == NULL) {
         printf("Unable to open fragment shader!\n");
         exit(1);
@@ -166,31 +151,9 @@ void CreateGraphicsPipeline() {
         fread(FragmentShader, 1, length, file);
     }
     fclose(file);
-    
-    //printf("Contents of src/shaders/vertex.glsl:\n%s\n", VertexShader);
-    //printf("Contents of src/shaders/fragment.glsl:\n%s\n", FragmentShader);
- 
+
     ShaderProgram = CreateShaderProgram(VertexShader, FragmentShader);
     
     free(VertexShader);
     free(FragmentShader);
-}
-
-void PreDraw() {
-	glDisable(GL_DEPTH_TEST);
-	glDisable(GL_CULL_FACE);
-	glViewport(0, 0, 640, 480);
-	glClearColor(0.0f, 0.15f, 0.3f, 1.f);
-
-	glClear(GL_DEPTH_BUFFER_BIT | GL_COLOR_BUFFER_BIT);
-
-	glUseProgram(ShaderProgram);
-    glUniform1f(0, g_uOffset);
-    }
-
-void Draw() {
-	glBindVertexArray(VAObuf);
-	glBindBuffer(GL_ARRAY_BUFFER, VBObuf);
-	//glDrawArrays(GL_TRIANGLES, 0, 6);
-    glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
 }
