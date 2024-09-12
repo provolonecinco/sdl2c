@@ -3,6 +3,7 @@
 #include <SDL2/SDL_image.h>
 #include <glad/glad.h>
 #include <cglm/cglm.h>
+#include "stb_image.h"
 
 #include "input.h"
 #include "gfx.h"
@@ -44,6 +45,27 @@ int main(int argc, char* argv[]) {
 
 	// Gets ID of uniform called "scale"
 	GLuint uniID = glGetUniformLocation(ShaderProgram, "scale");
+
+	// Texture
+	int widthImg, heightImg, numColCh = 0;
+	stbi_set_flip_vertically_on_load(true);
+	unsigned char* bytes = stbi_load("nelson.png", &widthImg, &heightImg, &numColCh, 0);
+
+	GLuint texture;
+	glGenTextures(1, &texture);
+	glActiveTexture(GL_TEXTURE0);
+	glBindTexture(GL_TEXTURE_2D, texture); 
+
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
+	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, widthImg, heightImg, 0, GL_RGB, GL_UNSIGNED_BYTE, bytes);
+   
+    glGenerateMipmap(GL_TEXTURE_2D);
+
+    glUseProgram(ShaderProgram);
+	GLuint tex0Uni = glGetUniformLocation(ShaderProgram, "tex0");
 
 	int run = 1;
 	GLfloat rotation = 0;
@@ -93,10 +115,12 @@ int main(int argc, char* argv[]) {
 
 
 			glUniform1f(uniID, 0.5f + scale);
+			glUniform1i(tex0Uni, 0);
+			glBindTexture(GL_TEXTURE_2D, texture);
 
 			glBindVertexArray(VAObuf);
 			glBindBuffer(GL_ARRAY_BUFFER, VBObuf);
-			glDrawElements(GL_TRIANGLES, 15, GL_UNSIGNED_INT, 0);
+			glDrawElements(GL_TRIANGLES, 18, GL_UNSIGNED_INT, 0);
 			SDL_GL_SwapWindow(window);
 		}
 }

@@ -6,16 +6,16 @@
 #include "gfx.h"
 
 GLfloat vertexData[] = { 
-    //     COORDINATES     //       COLORS     
-	-0.5f, 0.0f,  0.5f,     0.83f, 0.70f, 0.44f,
-	-0.5f, 0.0f, -0.5f,     0.83f, 0.70f, 0.44f,
-	 0.5f, 0.0f, -0.5f,     0.83f, 0.70f, 0.44f,
-	 0.5f, 0.0f,  0.5f,     0.83f, 0.70f, 0.44f,
-	 0.0f, 1.0f,  0.0f,     0.92f, 0.86f, 0.76f,   
+    //     COORDINATES     //       COLORS          // TEXTURES
+	-0.5f, 0.0f,  0.5f,     0.83f, 0.70f, 0.44f,	0.0f, 0.0f,
+	-0.5f, 0.0f, -0.5f,     0.83f, 0.70f, 0.44f,	1.0f, 0.0f,
+	 0.5f, 0.0f, -0.5f,     0.83f, 0.70f, 0.44f,	0.0f, 0.0f,
+	 0.5f, 0.0f,  0.5f,     0.83f, 0.70f, 0.44f,	1.0f, 0.0f,
+	 0.0f, 0.8f,  0.0f,     0.92f, 0.86f, 0.76f,	0.5f, 1.0f
 };
 
 GLuint indexData[] = {
-    0, 1, 2,
+	0, 1, 2,
 	0, 2, 3,
 	0, 1, 4,
 	1, 2, 4,
@@ -55,7 +55,7 @@ void LoadBuffers() {
         3,                          // Size
         GL_FLOAT,                   // Type
         GL_FALSE,                   // Normalize fixed point values
-        sizeof(GL_FLOAT) * 6,       // Stride (space between data)
+        sizeof(GL_FLOAT) * 8,       // Stride (space between data)
         (void*)0                    // Pointer to first component
     ); 
 
@@ -66,11 +66,24 @@ void LoadBuffers() {
         3, 
         GL_FLOAT, 
         GL_FALSE, 
-        sizeof(GL_FLOAT) * 6, 
+        sizeof(GL_FLOAT) * 8, 
         (GLvoid*)(sizeof(GL_FLOAT) * 3)
     );
+
+    // Texture information
+    glEnableVertexAttribArray(2);
+    glVertexAttribPointer(
+        2, 
+        2, 
+        GL_FLOAT, 
+        GL_FALSE, 
+        sizeof(GL_FLOAT) * 8, 
+        (GLvoid*)(sizeof(GL_FLOAT) * 6)
+    );
+
 
     glBindVertexArray(0);
     glDisableVertexAttribArray(0);
     glDisableVertexAttribArray(1);
+    glDisableVertexAttribArray(2);
 }
