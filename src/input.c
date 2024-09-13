@@ -1,5 +1,5 @@
 #include <SDL2/SDL.h>
-
+#include <stdio.h>
 #include "input.h"
 
 void CheckInput(SDL_Event event) {	

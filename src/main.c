@@ -8,6 +8,8 @@
 #include "input.h"
 #include "gfx.h"
 #include "shader.h"
+#include "camera.h"
+
 
 int main(int argc, char* argv[]) {
 	// Initialize SDL and create window
@@ -43,9 +45,6 @@ int main(int argc, char* argv[]) {
 	LoadBuffers();
 	LoadShaders("src/shaders/vertex.glsl", "src/shaders/fragment.glsl");
 
-	// Gets ID of uniform called "scale"
-	GLuint uniID = glGetUniformLocation(ShaderProgram, "scale");
-
 	// Texture
 	int widthImg, heightImg, numColCh = 0;
 	stbi_set_flip_vertically_on_load(true);
@@ -67,8 +66,10 @@ int main(int argc, char* argv[]) {
     glUseProgram(ShaderProgram);
 	GLuint tex0Uni = glGetUniformLocation(ShaderProgram, "tex0");
 
+	vec3 campos = {0.0f, 0.5f, 2.0f};
+	InitCamera(640, 480, campos);
+
 	int run = 1;
-	GLfloat rotation = 0;
 	SDL_Event event;
 
     // main loop
@@ -81,40 +82,13 @@ int main(int argc, char* argv[]) {
 				CheckInput(event);
 			}
 
-			if (gUserInput.KEY_UP) {scale += 0.01f;}
-			if (gUserInput.KEY_DOWN) {scale -= 0.01f;}
-
 			glClearColor(0.0f, 0.15f, 0.3f, 1.0f);
 			glClear(GL_DEPTH_BUFFER_BIT | GL_COLOR_BUFFER_BIT);
 			glUseProgram(ShaderProgram);
 
-			// Create identity matrices
-			mat4 model;
-			glm_mat4_identity(model);
-			mat4 view;
-			glm_mat4_identity(view);
-			mat4 projection;
-			glm_mat4_identity(projection);
+			CameraInputs(window);
+			CameraMatrix(45.0f, 0.1f, 100.0f, ShaderProgram, "camMatrix");
 
-			if (gUserInput.KEY_LEFT) {rotation += 0.1f;}
-			if (gUserInput.KEY_RIGHT) {rotation -= 0.1f;}
-
-			vec3 displacement = {0.0f, -1.0f, -3.0f};
-			vec3 rotaxis = {0.0f, -1.0f, 0.0f};
-			glm_rotate(model, rotation, rotaxis);
-			glm_translate(view, displacement);
-			glm_perspective(45.0f, (float)(640/480), 0.1f, 100.0f, projection);
-			
-			// Pass matrices into shaders
-			int modelLoc = glGetUniformLocation(ShaderProgram, "model");
-			glUniformMatrix4fv(modelLoc, 1, GL_FALSE, (void*)model);
-			int viewLoc = glGetUniformLocation(ShaderProgram, "view");
-			glUniformMatrix4fv(viewLoc, 1, GL_FALSE, (void*)view);
-			int projectionLoc = glGetUniformLocation(ShaderProgram, "projection");
-			glUniformMatrix4fv(projectionLoc, 1, GL_FALSE, (void*)projection);
-
-
-			glUniform1f(uniID, 0.5f + scale);
 			glUniform1i(tex0Uni, 0);
 			glBindTexture(GL_TEXTURE_2D, texture);
 
