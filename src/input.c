@@ -47,4 +47,7 @@ void CheckInput() {
 		if (!input.SHIFT) {input.SHIFT = PRESSED;} 
 		else {input.SHIFT = HELD;}
 	} else {input.SHIFT = NONE;}
+
+    // Get mouse button state and cursor position
+    mousestate = SDL_GetMouseState(&mouseX, &mouseY);
 }

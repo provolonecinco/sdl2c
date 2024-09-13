@@ -1,6 +1,9 @@
 #include <stdio.h>
-#include <stdlib.h>
+#include <SDL2/SDL.h>
+#include <SDL2/SDL_image.h>
 #include <glad/glad.h>
+#include <cglm/struct.h>
+#include "stb_image.h"
 
 #include "gfx.h"
 

@@ -7,8 +7,6 @@
 
 #include "input.h"
 #include "gfx.h"
-#include "shader.h"
-#include "camera.h"
 
 void InitCamera(GLint width, GLint height, vec3s position) {
     cam.width = width;
@@ -36,11 +34,9 @@ void CameraMatrix(float FOVdeg, float nearPlane, float farPlane, GLuint program,
     // add perspective to scene
     projection = glms_perspective(FOVdeg, (float)(cam.width/cam.height), nearPlane, farPlane);
     // yeah
-
     mat4s viewjection = glms_mat4_mul(projection, view);
     glUniformMatrix4fv(glGetUniformLocation(program, uniform), 1, GL_FALSE, (float *)&viewjection);
 }
-
 
 void CameraInputs(SDL_Window* window) {
 // TODO - control camera
@@ -74,28 +70,27 @@ void CameraInputs(SDL_Window* window) {
         cam.speed = 0.01f;
     }
 
-    int mouseX, mouseY, firstclick;
-    Uint32 mousestate = SDL_GetMouseState(&mouseX, &mouseY);
-
-    if (mousestate == SDL_BUTTON_LEFT) {
+    if ((mousestate & SDL_BUTTON_LEFT) == SDL_BUTTON_LEFT) {
         SDL_ShowCursor(SDL_DISABLE);
-        
+       
+        // Stop camera from jumping on click
         if (firstclick) {
-            SDL_WarpMouseInWindow(window, 640/2, 480/2);
+            mouseX = screenWidth/2;
+            mouseY = screenHeight/2;
             firstclick = 0;
         }
 
-        float rotX = cam.sensitivity * (float)(mouseY - (480/2)) / 480;
-        float rotY = cam.sensitivity * (float)(mouseX - (640/2)) / 640;
+        float rotX = cam.sensitivity * (float)(mouseY - (screenHeight/2)) / screenHeight;
+        float rotY = cam.sensitivity * (float)(mouseX - (screenWidth/2)) / screenWidth;
 
+        // Precalculate rotation to prevent excessive movement
         vec3s newOrientation = glms_vec3_rotate(cam.orientation, -rotX, glms_normalize(glms_cross(cam.orientation, cam.up)));
-
         if (abs(glms_vec3_angle(newOrientation, cam.up)) - 90.0f <= 85.0f) {
             cam.orientation = newOrientation;
         }        
 
         cam.orientation = glms_vec3_rotate(cam.orientation, -rotY, cam.up);
-        SDL_WarpMouseInWindow(window, 640/2, 480/2);
+        SDL_WarpMouseInWindow(window, screenWidth/2, screenHeight/2);
     } else {
         SDL_ShowCursor(SDL_ENABLE);
         firstclick = 1;
