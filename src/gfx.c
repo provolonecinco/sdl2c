@@ -1,7 +1,6 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <glad/glad.h>
-#include <cglm/cglm.h>
 
 #include "gfx.h"
 

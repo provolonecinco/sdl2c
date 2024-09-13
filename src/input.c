@@ -2,35 +2,49 @@
 #include <stdio.h>
 #include "input.h"
 
-void CheckInput(SDL_Event event) {	
-	if (event.type == SDL_KEYDOWN) {
-		switch (event.key.keysym.sym) {
-			case SDLK_UP:
-				if (!gUserInput.KEY_UP) {gUserInput.KEY_UP = PRESSED;} 
-				else {gUserInput.KEY_UP = HELD;}
-				break; 
-			case SDLK_DOWN:
-				if (!gUserInput.KEY_DOWN) {gUserInput.KEY_DOWN = PRESSED;} 
-				else {gUserInput.KEY_DOWN = HELD;}
-				break;
-			case SDLK_LEFT:
-				if (!gUserInput.KEY_LEFT) {gUserInput.KEY_LEFT = PRESSED;} 
-				else {gUserInput.KEY_LEFT = HELD;}
-				break; 
-			case SDLK_RIGHT:
-				if (!gUserInput.KEY_RIGHT) {gUserInput.KEY_RIGHT = PRESSED;} 
-				else {gUserInput.KEY_RIGHT = HELD;}
-				break; 
-		}
-	}
+void CheckInput() {
+	if (keys[SDL_SCANCODE_UP]) {
+		if (!input.UP) {input.UP = PRESSED;} 
+		else {input.UP = HELD;}
+	} else {input.UP = NONE;}
 
-    // reset keystates on release
-	if (event.type == SDL_KEYUP) {
-		switch (event.key.keysym.sym) {
-			case SDLK_UP: gUserInput.KEY_UP = NONE; break; 
-			case SDLK_DOWN: gUserInput.KEY_DOWN = NONE; break; 
-			case SDLK_LEFT: gUserInput.KEY_LEFT = NONE; break; 
-			case SDLK_RIGHT:gUserInput.KEY_RIGHT = NONE; break; 
-		}
-	}
+	if (keys[SDL_SCANCODE_DOWN]) {
+		if (!input.DOWN) {input.DOWN = PRESSED;} 
+		else {input.DOWN = HELD;}
+	} else {input.DOWN = NONE;}
+
+	if (keys[SDL_SCANCODE_LEFT]) {
+		if (!input.LEFT) {input.LEFT = PRESSED;} 
+		else {input.LEFT = HELD;}
+	} else {input.LEFT = NONE;}
+
+	if (keys[SDL_SCANCODE_RIGHT]) {
+		if (!input.RIGHT) {input.RIGHT = PRESSED;} 
+		else {input.RIGHT = HELD;}
+	} else {input.RIGHT = NONE;}
+
+	if (keys[SDL_SCANCODE_W]) {
+		if (!input.W) {input.W = PRESSED;} 
+		else {input.W = HELD;}
+	} else {input.W = NONE;}
+
+	if (keys[SDL_SCANCODE_A]) {
+		if (!input.A) {input.A = PRESSED;} 
+		else {input.A = HELD;}
+	} else {input.A = NONE;}
+
+	if (keys[SDL_SCANCODE_S]) {
+		if (!input.S) {input.S = PRESSED;} 
+		else {input.S = HELD;}
+	} else {input.S = NONE;}
+
+	if (keys[SDL_SCANCODE_D]) {
+		if (!input.D) {input.D = PRESSED;} 
+		else {input.D = HELD;}
+	} else {input.D = NONE;}
+
+	if (keys[SDL_SCANCODE_LSHIFT]) {
+		if (!input.SHIFT) {input.SHIFT = PRESSED;} 
+		else {input.SHIFT = HELD;}
+	} else {input.SHIFT = NONE;}
 }

@@ -2,7 +2,7 @@
 #include <SDL2/SDL.h>
 #include <SDL2/SDL_image.h>
 #include <glad/glad.h>
-#include <cglm/cglm.h>
+#include <cglm/struct.h>
 #include "stb_image.h"
 
 #include "input.h"
@@ -66,9 +66,10 @@ int main(int argc, char* argv[]) {
     glUseProgram(ShaderProgram);
 	GLuint tex0Uni = glGetUniformLocation(ShaderProgram, "tex0");
 
-	vec3 campos = {0.0f, 0.5f, 2.0f};
+	vec3s campos = {0.0f, 0.5f, 2.0f};
 	InitCamera(640, 480, campos);
 
+	keys = SDL_GetKeyboardState(NULL);
 	int run = 1;
 	SDL_Event event;
 
@@ -78,30 +79,33 @@ int main(int argc, char* argv[]) {
 			if(event.type == SDL_QUIT) {
 				run = 0;
 			}
-			if(event.type == SDL_KEYDOWN | SDL_KEYUP) {
-				CheckInput(event);
-			}
-
-			glClearColor(0.0f, 0.15f, 0.3f, 1.0f);
-			glClear(GL_DEPTH_BUFFER_BIT | GL_COLOR_BUFFER_BIT);
-			glUseProgram(ShaderProgram);
-
-			CameraInputs(window);
-			CameraMatrix(45.0f, 0.1f, 100.0f, ShaderProgram, "camMatrix");
-
-			glUniform1i(tex0Uni, 0);
-			glBindTexture(GL_TEXTURE_2D, texture);
-
-			glBindVertexArray(VAObuf);
-			glBindBuffer(GL_ARRAY_BUFFER, VBObuf);
-			glDrawElements(GL_TRIANGLES, 18, GL_UNSIGNED_INT, 0);
-			SDL_GL_SwapWindow(window);
 		}
-}
+		
+		printf("checking input\n");
+		CheckInput();
+		printf("input checked\n");
 
+		glClearColor(0.0f, 0.15f, 0.3f, 1.0f);
+		glClear(GL_DEPTH_BUFFER_BIT | GL_COLOR_BUFFER_BIT);
+		glUseProgram(ShaderProgram);
+
+		CameraInputs(window);
+		CameraMatrix(45.0f, 0.1f, 100.0f, ShaderProgram, "camMatrix");
+
+		glUniform1i(tex0Uni, 0);
+		glBindTexture(GL_TEXTURE_2D, texture);
+
+		glBindVertexArray(VAObuf);
+		glBindBuffer(GL_ARRAY_BUFFER, VBObuf);
+		glDrawElements(GL_TRIANGLES, 18, GL_UNSIGNED_INT, 0);
+		SDL_GL_SwapWindow(window);
+
+		SDL_Delay(16);
+	}
 	printf("Exiting...");
 	SDL_DestroyWindow(window);
 	SDL_Quit();
     return 0;
 }
+
 		
