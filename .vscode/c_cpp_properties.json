@@ -5,8 +5,7 @@
             "includePath": [
                 "${workspaceFolder}/**",
                 "${workspaceFolder}/src/include/**",
-                "${workspaceFolder}/lib/**",
-                "E:/MinGW/include/"
+                "C:/Programs/MinGW/include/"
             ],
             "defines": [
                 "_DEBUG",
@@ -17,7 +16,7 @@
             "cStandard": "c17",
             "cppStandard": "c++17",
             "intelliSenseMode": "windows-gcc-x64",
-            "compilerPath": "E:/MinGW/bin/gcc.exe"
+            "compilerPath": "C:/Programs/MinGW/bin/gcc.exe"
         }
     ],
     "version": 4

@@ -50,7 +50,7 @@ int main(int argc, char* argv[]) {
 	// Load texture from image file
 	int widthImg, heightImg, numColCh = 0;
 	stbi_set_flip_vertically_on_load(true);
-	unsigned char* bytes = stbi_load("nelson.png", &widthImg, &heightImg, &numColCh, 0);
+	unsigned char* bytes = stbi_load("gallen.png", &widthImg, &heightImg, &numColCh, 0);
 
     // Create texture object
 	GLuint texture;
@@ -63,7 +63,7 @@ int main(int argc, char* argv[]) {
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
-	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, widthImg, heightImg, 0, GL_RGB, GL_UNSIGNED_BYTE, bytes);
+	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, widthImg, heightImg, 0, GL_RGBA, GL_UNSIGNED_BYTE, bytes);
     glGenerateMipmap(GL_TEXTURE_2D);
 
     // Create shader program to pass texture into
